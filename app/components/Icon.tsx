@@ -1,17 +1,16 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import colors from "../config/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React from "react";
+import { View } from "react-native";
 
 interface Props {
-  name: keyof typeof MaterialCommunityIcons.glyphMap;
+  name?: keyof typeof MaterialCommunityIcons.glyphMap;
   backgroundColor?: string;
   iconColor?: "white";
   size?: number;
 }
 
-const AppIcon = ({
-  name,
+const Icon = ({
+  name = "cross",
   iconColor = "white",
   backgroundColor = "black",
   size = 40,
@@ -32,14 +31,4 @@ const AppIcon = ({
   );
 };
 
-export default AppIcon;
-
-const styles = StyleSheet.create({
-  container: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
+export default Icon;

@@ -1,47 +1,54 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import colors from "../config/colors";
-import Screen from "../components/Screen";
-import Card from "../components/Card";
+import { useNavigation } from "@react-navigation/native"
+import React, { useEffect } from "react"
+import { FlatList } from "react-native"
+import listingsApi, { Listing } from "../api/listings"
+import ActivityIndicator from "../components/ActivityIndicator"
+import Button from "../components/Button"
+import Card from "../components/Card"
+import Screen from "../components/Screen"
+import AppText from "../components/Text"
+import colors from "../config/colors"
+import useApi from "../hooks/useApi"
+import routes from "../navigation/routes"
 
 const ListingsScreen = () => {
-  const listings = [
-    {
-      id: 1,
-      image: require("../assets/jacket.jpg"),
-      title: "Red jacket for sale",
-      description: "$100",
-    },
-    {
-      id: 2,
-      image: require("../assets/couch.jpg"),
-      title: "Couch in great condition",
-      description: "$1000",
-    },
-  ];
+  const { navigate } = useNavigation()
+  const {
+    data: listings,
+    error,
+    loading,
+    request: loadListings,
+  } = useApi<Listing[]>(listingsApi.getListings)
+
+  useEffect(() => {
+    loadListings()
+  }, [])
+
   return (
-    <Screen color={colors.light}>
-      <View style={styles.container}>
+    <>
+      <ActivityIndicator visible={loading} />
+      <Screen color={colors.light}>
+        {error && (
+          <>
+            <AppText>Couldn't retrieve the listings.</AppText>
+            <Button title="Retry" onPress={loadListings} />
+          </>
+        )}
         <FlatList
           data={listings}
-          keyExtractor={(listing) => listing.id.toString()}
+          keyExtractor={(item: Listing) => item.id.toString()}
           renderItem={({ item }) => (
             <Card
               title={item.title}
-              subTitle={item.description}
-              image={item.image}
+              subTitle={"$" + item.price}
+              imageUrl={item.images[0].url}
+              onPress={() => navigate(routes.LISTING_DETAILS, item)}
             />
           )}
         />
-      </View>
-    </Screen>
-  );
-};
+      </Screen>
+    </>
+  )
+}
 
-export default ListingsScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
-});
+export default ListingsScreen

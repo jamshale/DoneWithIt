@@ -8,7 +8,7 @@ interface Props {
   onPress: () => void;
 }
 
-const AppButton = ({ color = "primary", title, onPress }: Props) => {
+const Button = ({ color = "primary", title, onPress }: Props) => {
   return (
     <TouchableOpacity
       style={{ ...styles.button, backgroundColor: colors[color] }}
@@ -19,7 +19,7 @@ const AppButton = ({ color = "primary", title, onPress }: Props) => {
   );
 };
 
-export default AppButton;
+export default Button;
 
 const styles = StyleSheet.create({
   button: {

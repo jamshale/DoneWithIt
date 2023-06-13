@@ -7,10 +7,11 @@ import {
   View,
 } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import AppText from "./AppText";
+import AppText from "../Text";
 
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import colors from "../config/colors";
+import colors from "../../config/colors";
 
 interface Props {
   title: string;
@@ -19,6 +20,7 @@ interface Props {
   image?: ImageSourcePropType;
   onPress?: () => void;
   renderRightActions?: () => ReactNode | undefined;
+  showChevrons?: boolean;
 }
 
 const ListItem = ({
@@ -28,6 +30,7 @@ const ListItem = ({
   image,
   onPress,
   renderRightActions,
+  showChevrons,
 }: Props) => {
   return (
     <GestureHandlerRootView>
@@ -37,11 +40,22 @@ const ListItem = ({
             {IconComponent}
             {image && <Image style={styles.image} source={image} />}
             <View style={styles.detailsContainer}>
-              <AppText style={styles.title}>{title}</AppText>
+              <AppText numberOfLines={1} style={styles.title}>
+                {title}
+              </AppText>
               {subTitle && (
-                <AppText style={styles.subTitle}>{subTitle}</AppText>
+                <AppText numberOfLines={2} style={styles.subTitle}>
+                  {subTitle}
+                </AppText>
               )}
             </View>
+            {showChevrons && (
+              <MaterialCommunityIcons
+                name="chevron-right"
+                color={colors.medium}
+                size={25}
+              />
+            )}
           </View>
         </TouchableHighlight>
       </Swipeable>
@@ -56,10 +70,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 15,
     backgroundColor: colors.white,
+    alignItems: "center",
   },
   detailsContainer: {
+    flex: 1,
     marginLeft: 10,
-    justifyContent: "center",
   },
   image: {
     width: 70,

@@ -1,39 +1,48 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import Screen from "../components/Screen";
-import React from "react";
-import ListItem from "../components/ListItem";
-import colors from "../config/colors";
-import AppIcon from "../components/AppIcon";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { ListItemSeperator } from "../components/ListItemSeperator";
+import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { useNavigation } from "@react-navigation/native"
+import React from "react"
+import { FlatList, StyleSheet, View } from "react-native"
+
+import useAuth from "../auth/useAuth"
+import Icon from "../components/Icon"
+import { ListItemSeperator } from "../components/lists"
+import ListItem from "../components/lists/ListItem"
+import Screen from "../components/Screen"
+import colors from "../config/colors"
 
 interface IconOption {
-  color?: string;
-  name: keyof typeof MaterialCommunityIcons.glyphMap;
-  title: string;
+  color?: string
+  name: keyof typeof MaterialCommunityIcons.glyphMap
+  title: string
+  targetScreen: "Messages"
 }
 
 const AccountScreen = () => {
+  const { user, logout } = useAuth()
+  const { navigate } = useNavigation()
+
   const options: IconOption[] = [
     {
       color: colors.primary,
       name: "format-list-bulleted",
       title: "My Listings",
+      targetScreen: "Messages",
     },
     {
       color: colors.secondary,
       name: "email",
       title: "My Messages",
+      targetScreen: "Messages",
     },
-  ];
+  ]
 
   return (
-    <Screen color={colors.light}>
+    <Screen color={colors.light} paddingHorizontal={0}>
       <View style={styles.container}>
         <ListItem
-          title="Mosh Hamedani"
-          subTitle="programmingwithmosh@gmail.com"
-          image={require("../assets/mosh.jpg")}
+          title={user?.name || ""}
+          subTitle={user?.email}
+          image={require("../assets/jamie.jpg")}
         />
       </View>
       <View style={styles.container}>
@@ -43,9 +52,11 @@ const AccountScreen = () => {
           renderItem={({ item }) => (
             <ListItem
               title={item.title}
+              showChevrons
               IconComponent={
-                <AppIcon name={item.name} backgroundColor={item.color} />
+                <Icon name={item.name} backgroundColor={item.color} />
               }
+              onPress={() => navigate(item.targetScreen)}
             />
           )}
           ItemSeparatorComponent={ListItemSeperator}
@@ -53,18 +64,17 @@ const AccountScreen = () => {
       </View>
       <ListItem
         title="Log Out"
-        IconComponent={
-          <AppIcon name="logout" backgroundColor={colors.warning} />
-        }
+        IconComponent={<Icon name="logout" backgroundColor={colors.warning} />}
+        onPress={() => logout()}
       />
     </Screen>
-  );
-};
+  )
+}
 
-export default AccountScreen;
+export default AccountScreen
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 20,
+    marginBottom: 20,
   },
-});
+})
